@@ -1,4 +1,4 @@
-export const BG_VIDEO_PATH = './js/server/assets/videos/background.mp4';
+export const BG_VIDEO_PATH = './js/server/assets/videos/background_compressed.mp4';
 export const BG_VIDEO_DURATION = 119;
 export const TRANSITION_PATH = './js/server/assets/videos/transition.mp4';
 export const BG_MUSIC_PATH = './js/server/assets/sounds/lofi_3.mp3';
