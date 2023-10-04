@@ -1,11 +1,12 @@
 
 import './loadenv.js';
-import { BG_VIDEO_DURATION, BG_VIDEO_PATH, BG_MUSIC_PATH, TRANSITION_PATH } from "./constants.js";
+import { BG_VIDEO_DURATION, BG_VIDEO_PATH, BG_MUSIC_PATH, TRANSITION_PATH, TITLE_IMAGE_PATH, CACHE_DIR, AUDIO, BACKGROUND_IMAGE_PATH, AVATAR_IMAGE_PATH } from "./constants.js";
 import { getRandomNumber } from "./utils.js";
 import Editly from "editly";
 import { createImageFromText } from "./images.js";
-import { redditPostToScenes } from "./reddit.js";
+import { createClipsFromScenes, redditPostToScenes } from "./reddit.js";
 import { createAudio, getAudioDuration } from './audio.js';
+import ffmpeg from 'fluent-ffmpeg';
 
 //read from env
 const NUM_COMMENTS = 1;
@@ -21,6 +22,8 @@ const transitionClip = {
 
 const createVideo = async (postId) => {
     const scenes = await redditPostToScenes(postId, NUM_COMMENTS, NUM_REPLIES);
+    //const clips = await createClipsFromScenes(scenes);
+    //return;
 
     let clips = [];
     for (let scene of scenes) {
@@ -86,6 +89,21 @@ const createVideo = async (postId) => {
     await new Promise(resolve => setTimeout(resolve, 1500000));
 }
 
-createVideo('16121p5');
+const testFluent = async () => {
+    new ffmpeg()
+        .addInput(BG_MUSIC_PATH)
+        .addInput(BG_VIDEO_PATH)
+        .addInput(AVATAR_IMAGE_PATH)
+
+        .complexFilter([
+            "[1:v][2:v]overlay=(W-w)/2:(H-h)/2"
+        ])
+        .setStartTime(0) //Can be in "HH:MM:SS" format also
+        .setDuration(5)
+        .saveToFile('./fluent.mp4');
+}
+
+//createVideo('16121p5');
+testFluent();
 //createImageFromText("Amanda Byness story breaks my heart", "steve", 20000, { initialImage: true })
 //createImageFromText("Amanda Byness story breaks my heart", "steve", 20000, { initialImage: false })

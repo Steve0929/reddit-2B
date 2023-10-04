@@ -58,13 +58,70 @@ const submissionToScenes = (submission, NUM_COMMENTS, NUM_REPLIES) => {
             upvotes: kFormat(comment.ups),
             config: { initialImage: false },
             subScenes: comment.replies.slice(0, NUM_REPLIES).map(reply => ({
-                text: reply.body,
-                user: reply.author.name,
-                upvotes: kFormat(reply.ups),
-                config: { initialImage: false, isReply: true },
+                text: comment.body,
+                user: comment.author.name,
+                upvotes: kFormat(comment.ups),
+                config: {
+                    initialImage: false,
+                    isReply: true,
+                    reply_text: reply.body,
+                    reply_user: reply.author.name,
+                    reply_upvotes: kFormat(reply.ups),
+                },
             })),
         }
         scenes.push(newScene);
     }
     return scenes;
+}
+
+export const createClipsFromScenes = async (scenes) => {
+    let clips = [];
+    for (const scene of scenes) {
+        const clip = await clipFromScene(scene);
+        clips.push(clip);
+    }
+    return clips;
+}
+
+const clipFromScene = async (scene) => {
+    const audioPath = await createAudio(scene.text);
+    const imagePath = await createImageFromText(scene.text, scene.user, scene.upvotes, scene.config);
+
+    const sceneDuration = await getAudioDuration(audioPath);
+    const cutFrom = getRandomNumber(1, BG_VIDEO_DURATION - sceneDuration);
+    const cutTo = cutFrom + sceneDuration;
+
+    const clip = {
+        duration: sceneDuration,
+        layers: [
+            { type: 'video', path: BG_VIDEO_PATH, resizeMode: 'contain-blur', cutFrom: cutFrom, cutTo: cutTo },
+            { type: 'image-overlay', path: imagePath, resizeMode: 'contain', width: 0.6, height: 0.25 },
+            { type: 'detached-audio', path: audioPath }
+        ]
+    }
+    clips.push(clip);
+
+    //Add replies to same scene
+    let prevCutTo = cutTo;
+    for (const subscene of scene.subScenes) {
+        const audioPathSubscene = await createAudio(subscene.text);
+        const subSceneDuration = await getAudioDuration(audioPathSubscene);
+        const cutFromSubscene = prevCutTo;
+        const cutToSubscene = cutFromSubscene + subSceneDuration;
+        const replyImage = await createImageFromText(scene.text, scene.user, scene.upvotes,
+            { ...subscene.config, reply_text: subscene.text, reply_user: subscene.user, reply_upvotes: subscene.upvotes });
+
+        let subClip = {
+            duration: subSceneDuration,
+            layers: [
+                { type: 'video', path: BG_VIDEO_PATH, resizeMode: 'contain-blur', cutFrom: cutFromSubscene, cutTo: cutToSubscene },
+                { type: 'image-overlay', path: replyImage, resizeMode: 'contain', width: 0.6, height: 0.25 },
+                { type: 'detached-audio', path: audioPathSubscene }
+            ]
+        }
+        prevCutTo = cutToSubscene;
+        clips.push(subClip);
+        return clip;
+    }
 }
