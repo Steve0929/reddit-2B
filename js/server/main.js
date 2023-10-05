@@ -1,6 +1,6 @@
 
 import './loadenv.js';
-import { BG_VIDEO_DURATION, BG_VIDEO_PATH, BG_MUSIC_PATH, TRANSITION_PATH, TITLE_IMAGE_PATH, CACHE_DIR, AUDIO, BACKGROUND_IMAGE_PATH, AVATAR_IMAGE_PATH } from "./constants.js";
+import { BG_VIDEO_DURATION, BG_VIDEO_PATH, BG_MUSIC_PATH, TRANSITION_PATH, TITLE_IMAGE_PATH, CACHE_DIR, BACKGROUND_IMAGE_PATH, AVATAR_IMAGE_PATH } from "./constants.js";
 import { getRandomNumber } from "./utils.js";
 import Editly from "editly";
 import { createImageFromText } from "./images.js";
@@ -90,17 +90,35 @@ const createVideo = async (postId) => {
 }
 
 const testFluent = async () => {
-    new ffmpeg()
+    /*
+     new ffmpeg()
         .addInput(BG_MUSIC_PATH)
-        .addInput(BG_VIDEO_PATH)
+        .addInput(BG_VIDEO_PATH).setStartTime(0)
         .addInput(AVATAR_IMAGE_PATH)
-
         .complexFilter([
             "[1:v][2:v]overlay=(W-w)/2:(H-h)/2"
         ])
-        .setStartTime(0) //Can be in "HH:MM:SS" format also
         .setDuration(5)
         .saveToFile('./fluent.mp4');
+*/
+    new ffmpeg()
+        .addInput(BG_MUSIC_PATH)
+        .addInput(BG_VIDEO_PATH).setStartTime(5)
+        .addInput(AVATAR_IMAGE_PATH)
+        .complexFilter([
+            "[1:v][2:v]overlay=(W-w)/2:(H-h)/2"
+        ])
+        
+        .setDuration(10)
+        .saveToFile('./fluent2.mp4');
+  /*
+        const final = new ffmpeg();
+        final.addInput('./fluent.mp4')
+        final.addInput('./fluent2.mp4')
+        await new Promise(resolve => {
+            final.mergeToFile('final.mp4').on(`end`, () => resolve('done')).on(`start`, c => console.log);
+        });
+     */
 }
 
 //createVideo('16121p5');
