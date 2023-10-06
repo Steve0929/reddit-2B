@@ -15,18 +15,23 @@ import ffmpeg from 'fluent-ffmpeg';
 //read from env
 const NUM_COMMENTS = 1;
 const NUM_REPLIES = 1;
+const WIDTH = '1920';
+const HEIGHT = '1080';
+let RESIZED_TRANSITION_PATH = './resized.mp4';
 //
 
-const transitionClip = {
-    layers: [
-        { type: 'video', path: TRANSITION_PATH, resizeMode: 'contain-blur' },
-        { type: 'detached-audio', path: TRANSITION_PATH },
-    ]
+const resizeTransition = async () => {
+    console.log("🎛️ Resizing transition scene")
+    await new Promise((resolve, reject) => {
+        new ffmpeg()
+            .addInput(TRANSITION_PATH)
+            .size(`${WIDTH}x${HEIGHT}`)
+            .saveToFile(RESIZED_TRANSITION_PATH).on(`end`, () => resolve())
+    })
 }
 
-
 const renderScene = async (scene) => {
-    console.log("Rendering scene ", JSON.stringify(scene))
+    console.log("🖌️ Rendering scene ", JSON.stringify(scene))
     await new Promise((resolve, reject) => {
         new ffmpeg()
             .addInput(scene.audio)
@@ -39,7 +44,8 @@ const renderScene = async (scene) => {
 }
 
 const createVideos = async (scenes) => {
-    const final = new ffmpeg();
+    await resizeTransition();
+    const videos = new ffmpeg();
     let sceneNum = 0;
     for (const scene of scenes) {
         //Create audios and calc total duration
@@ -53,18 +59,17 @@ const createVideos = async (scenes) => {
         const image = await createImageFromText(scene.text, scene.user, scene.upvotes, scene.config);
         scene.image = image;
         for (const subScene of scene.subScenes) {
-            const audioPathSubScene = await createAudio(subScene.text);
+            const audioPathSubScene = await createAudio(subScene.config.reply_text);
             const subSceneDuration = await getAudioDuration(audioPathSubScene);
             subScene.duration = subSceneDuration;
             subScene.audio = audioPathSubScene;
             totalSceneDuration += subSceneDuration;
-            //
+            //Create image
             const image = await createImageFromText(subScene.text, subScene.user, subScene.upvotes, subScene.config);
             subScene.image = image;
         }
         scene.path = `./scene-${sceneNum}.mp4`;
-        final.addInput(scene.path);
-        final.addInput(TRANSITION_PATH);
+        videos.addInput(scene.path);
         scene.cutFrom = getRandomNumber(1, BG_VIDEO_DURATION - totalSceneDuration);
         scene.cutTo = scene.cutFrom + scene.duration;
         await renderScene(scene)
@@ -78,69 +83,27 @@ const createVideos = async (scenes) => {
             subScene.cutFrom = cutFromSubscene;
             subScene.cutTo = cutToSubscene;
             subScene.path = `./scene-${sceneNum}.mp4`;
-            final.addInput(subScene.path);
-            final.addInput(TRANSITION_PATH);
+            videos.addInput(subScene.path);
             await renderScene(subScene)
             prevCutTo = cutToSubscene;
             sceneNum++;
         }
-
+        videos.addInput(RESIZED_TRANSITION_PATH);
     }
-    return final;
+    return videos;
 }
 
 const createVideo = async (postId) => {
     const scenes = await redditPostToScenes(postId, NUM_COMMENTS, NUM_REPLIES);
-    const final = await createVideos(scenes);
+    const videos = await createVideos(scenes);
 
-    //Merge everything and mix background music
+    //Merge everything
     console.log("🔄 Merging everything...")
-    final.addInput(BG_MUSIC_PATH).inputOption("-stream_loop -1");
     await new Promise((resolve, reject) => {
-        final.mergeToFile('./final.mp4').on(`end`, () => resolve('done')).on(`start`, c => console.log);
+        videos.mergeToFile('./final.mp4').on(`end`, () => resolve('done')).on(`start`, c => console.log);
     })
-    console.log("Done!")
-    await new Promise(resolve => setTimeout(resolve, 1500000));
-}
-
-const testFluent = async () => {
-    /*
-    await new Promise((resolve, reject) => {
-        new ffmpeg()
-            .addInput('./172185998e53b.wav')
-            .addInput(BG_VIDEO_PATH).setStartTime(0)
-            .addInput(AVATAR_IMAGE_PATH)
-            .complexFilter([
-                "[1:v][2:v]overlay=(W-w)/2:(H-h)/2",
-                "[0:a]aformat=fltp:44100:stereo"
-            ])
-            .setDuration(5)
-            .saveToFile('./fluent.mp4').on('end', () => { resolve() })
-    })
-    */
-
-    console.log("merging")
-    //resize transition
-    const resizedTrans = './trans.mp4'
-    /*
-    await new Promise((resolve, reject) => {
-        new ffmpeg()
-            .addInput(TRANSITION_PATH)
-            .size('1920x1080') // Apply the resizing filter
-            .saveToFile(resizedTrans).on(`end`, () => resolve('done'))
-    })
-
-    await new Promise((resolve, reject) => {
-        const final = new ffmpeg()
-        final.addInput('./fluent.mp4')
-        final.addInput(resizedTrans)
-        final.mergeToFile('final.mp4').on(`end`, () => resolve('done')).on('error', (err, stdout, stderr) => {
-            console.error('An error occurred:', err.message);
-            //console.error('FFmpeg stdout:', stdout);
-            console.error('FFmpeg stderr:', stderr);
-        })
-    })
-*/
+    //Mix background music
+    console.log("🎶 Mixing background music...")
     await new Promise((resolve, reject) => {
         new ffmpeg()
             .addInput(BG_MUSIC_PATH).inputOption("-stream_loop -1")
@@ -149,42 +112,12 @@ const testFluent = async () => {
             .complexFilter(['[0:a][1:a]amix=inputs=2'])
             .saveToFile('./finalWithMusic.mp4').on(`end`, () => resolve('done'))
     })
-
-    return;
-
-    await new Promise((resolve, reject) => {
-        new ffmpeg()
-            .addInput(BG_MUSIC_PATH)
-            .addInput(BG_VIDEO_PATH).setStartTime(0)
-            .addInput(AVATAR_IMAGE_PATH)
-            .complexFilter([
-                "[1:v][2:v]overlay=(W-w)/2:(H-h)/2"
-            ])
-            .setDuration(5)
-            .saveToFile('./fluent.mp4').on('end', () => { resolve() })
-    })
-
-    await new Promise((resolve, reject) => {
-        new ffmpeg()
-            .addInput(BG_MUSIC_PATH)
-            .addInput(BG_VIDEO_PATH).setStartTime(5)
-            .addInput(AVATAR_REPLY_IMAGE_PATH)
-            .complexFilter([
-                "[1:v][2:v]overlay=(W-w)/2:(H-h)/2"
-            ])
-            .setDuration(10)
-            .saveToFile('./fluent2.mp4').on('end', () => { resolve() })
-    })
-
-    await new Promise((resolve, reject) => {
-        const final = new ffmpeg();
-        final.addInput('./fluent.mp4')
-        final.addInput('./fluent2.mp4')
-        final.mergeToFile('final.mp4').on(`end`, () => resolve('done')).on(`start`, c => console.log);
-    })
+    console.log("✅ Done!")
+    await new Promise(resolve => setTimeout(resolve, 1500000));
 }
 
-//createVideo('16121p5');
-testFluent();
+
+createVideo('16121p5');
+//testFluent();
 //createImageFromText("Amanda Byness story breaks my heart", "steve", 20000, { initialImage: true })
 //createImageFromText("Amanda Byness story breaks my heart", "steve", 20000, { initialImage: false })
