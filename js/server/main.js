@@ -108,7 +108,7 @@ const createVideo = async (postId) => {
         new ffmpeg()
             .addInput(BG_MUSIC_PATH).inputOption("-stream_loop -1")
             .addInput('./final.mp4')
-            .addOption(`-shortest`)
+            .addOption('-shortest')
             .complexFilter(['[0:a][1:a]amix=inputs=2'])
             .saveToFile('./finalWithMusic.mp4').on(`end`, () => resolve('done'))
     })
