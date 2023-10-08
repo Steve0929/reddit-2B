@@ -43,31 +43,34 @@ const renderScene = async (scene) => {
     })
 }
 
+export const createSceneImageAndAudio = async (scene) => {
+    //Create audios
+    const text = scene.config.reply_text ? scene.config.reply_text : scene.text;
+    const audioPath = await createAudio(text);
+    const audioDuration = await getAudioDuration(audioPath);
+    scene.duration = audioDuration;
+    scene.audio = audioPath;
+    //Create image
+    const image = await createImageFromText(scene.text, scene.user, scene.upvotes, scene.config);
+    scene.image = image;
+}
+
+
 const createVideos = async (scenes) => {
     await resizeTransition();
     const videos = new ffmpeg();
     let sceneNum = 0;
     for (const scene of scenes) {
-        //Create audios and calc total duration
+        //Create audios, images and calc total duration
         let totalSceneDuration = 0;
-        const audioPath = await createAudio(scene.text);
-        const audioDuration = await getAudioDuration(audioPath);
-        scene.duration = audioDuration;
-        scene.audio = audioPath;
-        totalSceneDuration += audioDuration;
-        //Create image
-        const image = await createImageFromText(scene.text, scene.user, scene.upvotes, scene.config);
-        scene.image = image;
+        await createSceneImageAndAudio(scene);
+        totalSceneDuration += scene.duration;
         for (const subScene of scene.subScenes) {
-            const audioPathSubScene = await createAudio(subScene.config.reply_text);
-            const subSceneDuration = await getAudioDuration(audioPathSubScene);
-            subScene.duration = subSceneDuration;
-            subScene.audio = audioPathSubScene;
-            totalSceneDuration += subSceneDuration;
-            //Create image
-            const image = await createImageFromText(subScene.text, subScene.user, subScene.upvotes, subScene.config);
-            subScene.image = image;
+            //Create audios, images and calc total duration for replies
+            await createSceneImageAndAudio(subScene);
+            totalSceneDuration += subScene.duration;
         }
+
         scene.path = `./scene-${sceneNum}.mp4`;
         videos.addInput(scene.path);
         scene.cutFrom = getRandomNumber(1, BG_VIDEO_DURATION - totalSceneDuration);
