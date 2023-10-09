@@ -11,6 +11,29 @@ import { createImageFromText } from "./images.js";
 import { redditPostToScenes } from "./reddit.js";
 import { createAudio, getAudioDuration } from './audio.js';
 import ffmpeg from 'fluent-ffmpeg';
+import express from 'express';
+import redisClient from './redis/appConfig.js';
+
+//console.log(redisClient)
+
+
+(async () => {
+    await redisClient.sendCommand(["CONFIG", "SET", "appendonly", "yes"]);
+    const conf = await redisClient.sendCommand(["CONFIG", "GET", "appendonly"]);
+    console.log(conf)
+})()
+
+//redisClient.config("SET", "appendonly", "yes");
+
+const app = express();
+
+app.get("/", (request, response) => {
+    response.send("Hi there");
+});
+
+app.listen(2000, () => {
+    console.log("Listening on port 2000...");
+});
 
 //read from env
 const NUM_COMMENTS = 1;
@@ -43,7 +66,7 @@ const renderScene = async (scene) => {
     })
 }
 
-export const createSceneImageAndAudio = async (scene) => {
+const createSceneImageAndAudio = async (scene) => {
     //Create audios
     const text = scene.config.reply_text ? scene.config.reply_text : scene.text;
     const audioPath = await createAudio(text);
@@ -120,7 +143,7 @@ const createVideo = async (postId) => {
 }
 
 
-createVideo('16121p5');
+//createVideo('16121p5');
 //testFluent();
 //createImageFromText("Amanda Byness story breaks my heart", "steve", 20000, { initialImage: true })
 //createImageFromText("Amanda Byness story breaks my heart", "steve", 20000, { initialImage: false })
