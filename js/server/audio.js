@@ -7,14 +7,13 @@ import { PIPER_MODEL_PATH, TMP_PATH } from './constants.js';
 
 const execPromise = promisify(exec);
 
-export const createAudio = async (text) => {
+export const createAudio = async (text, conf) => {
     const randomId = createRandomId();
-    const filePath = `${TMP_PATH}/${randomId}.wav`;
+    const filePath = `${TMP_PATH}/${conf.videoID}/${randomId}.wav`;
     console.log(`creating audio...${randomId}`)
     try {
-        // wait for exec to complete
         const command = `echo "${text}" |  ./piper/piper --model piper/${PIPER_MODEL_PATH} --output_file ${filePath}`
-        const { stdout, stderr } = await execPromise(command);
+        const { stdout, stderr } = await execPromise(command);  // wait for exec to complete
         return filePath;
     } catch (error) {
         console.log(error);

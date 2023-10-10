@@ -6,7 +6,7 @@ FROM shivjm/node-chromium:node16-chromium116-debian
 COPY --from=ffmpeg /ffmpeg /usr/bin/
 COPY --from=ffmpeg /ffprobe /usr/bin/
 
-#
+#Install redis
 RUN apt-get update && apt install redis -y && redis-cli --version
 
 # Cache npm install in this layer
@@ -26,4 +26,5 @@ COPY . /app
 
 # Define the command to run when the container starts (startup command)
 #CMD ["redis-server", "&&", "node", "./js/server/main.js"]
+EXPOSE 2000
 CMD redis-server --daemonize yes && node ./js/server/main.js

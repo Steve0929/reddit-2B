@@ -1,5 +1,7 @@
 import Snoowrap from "snoowrap/dist/snoowrap.js";
 import { kFormat } from "./utils.js";
+import { DEFAULT_NUM_COMMENTS, DEFAULT_NUM_REPLIES } from "./constants.js";
+
 
 const reddit = new Snoowrap({
     "userAgent": process.env.REDDIT_USER_AGENT,   // Your USER_AGENT
@@ -9,7 +11,9 @@ const reddit = new Snoowrap({
     "password": process.env.REDDIT_PASSWORD      // Your Reddit password
 });
 
-export const redditPostToScenes = async (postId, NUM_COMMENTS = 2, NUM_REPLIES = 1) => {
+export const redditPostToScenes = async (postId, conf) => {
+    const NUM_COMMENTS = conf?.NUM_COMMENTS ?? DEFAULT_NUM_COMMENTS;
+    const NUM_REPLIES = conf?.NUM_REPLIES ?? DEFAULT_NUM_REPLIES;
     const response = await fetchRedditPost(postId);
     const scenes = submissionToScenes(response, NUM_COMMENTS, NUM_REPLIES);
     return scenes;

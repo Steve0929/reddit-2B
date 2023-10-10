@@ -2,8 +2,8 @@ import nodeHtmlToImage from "node-html-to-image/dist/index.js";
 import { AVATAR_IMAGE_PATH, AVATAR_REPLY_IMAGE_PATH, BACKGROUND_IMAGE_PATH, TITLE_IMAGE_PATH, TMP_PATH, UPVOTE_COLOR, UPVOTE_IMAGE_PATH } from "./constants.js";
 import { createRandomId, localImageToUri } from "./utils.js";
 
-export const createImageFromText = async (text, user, upvotes, config) => {
-    const path = `${TMP_PATH}/${createRandomId()}.png`;
+export const createImageFromText = async (text, user, upvotes, config, globalConf) => {
+    const path = `${TMP_PATH}/${globalConf.videoID}/${createRandomId()}.png`;
     const { gradient, initialImage, isReply } = config;
 
     const avatarImageSource = initialImage ? localImageToUri(TITLE_IMAGE_PATH) : localImageToUri(AVATAR_IMAGE_PATH);
