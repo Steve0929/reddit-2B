@@ -35,12 +35,11 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/credentials", async (request, response) => {
-    const user = await redisClient.get("REDDIT_USERNAME");
-    const pass = await redisClient.get("REDDIT_PASSWORD");
-    console.log(user)
-    console.log(pass)
-    const areCredentialsSetup = user && pass;
-    return response.json({ credentials: areCredentialsSetup });
+    const REDDIT_CREDS = await redisClient.hGetAll('REDDIT_CREDENTIALS')
+    if (REDDIT_CREDS?.username && REDDIT_CREDS?.clientSecret) {
+        return response.json({ credentials: true });
+    }
+    return response.json({ credentials: false })
 });
 
 app.post("/api/credentials", async (req, res) => {
@@ -54,8 +53,13 @@ app.post("/api/credentials", async (req, res) => {
             "clientSecret": clientSecret
         });
         const response = await reddit.getSubmission(TEST_POST_ID).fetch();
-        console.log(response)
         if (response.comments.length) {
+            await redisClient.hSet('REDDIT_CREDENTIALS', {
+                username: username,
+                password: password,
+                clientId: clientId,
+                clientSecret: clientSecret
+            })
             return res.json({ credentials: true })
         }
     }

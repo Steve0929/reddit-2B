@@ -27,4 +27,4 @@ COPY . /app
 # Define the command to run when the container starts (startup command)
 #CMD ["redis-server", "&&", "node", "./js/server/main.js"]
 EXPOSE 2000
-CMD redis-server --daemonize yes && node ./js/server/main.js
+CMD redis-server --appendonly yes --daemonize yes && node ./js/server/main.js

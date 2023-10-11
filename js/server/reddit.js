@@ -3,14 +3,6 @@ import { kFormat } from "./utils.js";
 import { DEFAULT_NUM_COMMENTS, DEFAULT_NUM_REPLIES } from "./constants.js";
 
 
-const reddit = new Snoowrap({
-    "userAgent": process.env.REDDIT_USER_AGENT,   // Your USER_AGENT
-    "clientId": process.env.REDDIT_CLIENT_ID,     // Your Client ID
-    "clientSecret": process.env.REDDIT_CLIENT_SECRET, // Your Client secret
-    "username": process.env.REDDIT_USERNAME,      // Your Reddit username
-    "password": process.env.REDDIT_PASSWORD      // Your Reddit password
-});
-
 export const redditPostToScenes = async (postId, conf) => {
     const NUM_COMMENTS = conf?.NUM_COMMENTS ?? DEFAULT_NUM_COMMENTS;
     const NUM_REPLIES = conf?.NUM_REPLIES ?? DEFAULT_NUM_REPLIES;
@@ -20,6 +12,13 @@ export const redditPostToScenes = async (postId, conf) => {
 }
 
 export const fetchRedditPost = async (postId) => {
+    const reddit = new Snoowrap({
+        "userAgent": process.env.REDDIT_USER_AGENT,   // Your USER_AGENT
+        "clientId": process.env.REDDIT_CLIENT_ID,     // Your Client ID
+        "clientSecret": process.env.REDDIT_CLIENT_SECRET, // Your Client secret
+        "username": process.env.REDDIT_USERNAME,      // Your Reddit username
+        "password": process.env.REDDIT_PASSWORD      // Your Reddit password
+    });
     const response = await reddit.getSubmission(postId).fetch();
     const cleanedResponse = cleanRedditResponse(response);
     return cleanedResponse;
