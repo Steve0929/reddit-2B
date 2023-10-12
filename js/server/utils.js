@@ -1,4 +1,5 @@
 import fs from 'fs';
+import redisClient from './redis/appConfig.js';
 
 export const createRandomId = () => {
     return Math.random().toString(16).slice(2);
@@ -24,4 +25,9 @@ export const kFormat = (num) => {
     return Math.abs(num) > 999
         ? `${Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1))}k`
         : Math.sign(num) * Math.abs(num);
+}
+
+export const areRedditCredentialsSetup = async () => {
+    const REDDIT_CREDS = await redisClient.hGetAll('REDDIT_CREDENTIALS');
+    return REDDIT_CREDS?.username && REDDIT_CREDS?.clientSecret;
 }

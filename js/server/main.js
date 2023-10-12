@@ -10,7 +10,7 @@ import {
     REDDIT_USER_AGENT,
     TEST_POST_ID
 } from "./constants.js";
-import { createRandomId, getRandomNumber } from "./utils.js";
+import { areRedditCredentialsSetup, createRandomId, getRandomNumber } from "./utils.js";
 import { createImageFromText } from "./images.js";
 import { redditPostToScenes } from "./reddit.js";
 import { createAudio, getAudioDuration } from './audio.js';
@@ -35,11 +35,8 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/credentials", async (request, response) => {
-    const REDDIT_CREDS = await redisClient.hGetAll('REDDIT_CREDENTIALS')
-    if (REDDIT_CREDS?.username && REDDIT_CREDS?.clientSecret) {
-        return response.json({ credentials: true });
-    }
-    return response.json({ credentials: false })
+    const credentialsReady = await areRedditCredentialsSetup();
+    return response.json({ credentials: credentialsReady })
 });
 
 app.post("/api/credentials", async (req, res) => {
@@ -70,8 +67,10 @@ app.post("/api/credentials", async (req, res) => {
 });
 
 app.post('/api/videos/create', async function (req, res, next) {
-    const postId = req.body.postId;
+    const credentialsReady = await areRedditCredentialsSetup();
+    if (!credentialsReady) return res.json({ error: 'Reddit credentials are not set up' })
     const conf = req.body.conf;
+    const { postId } = conf;
     const videoID = createRandomId();
     conf.videoID = videoID;
     createVideo(postId, conf);
