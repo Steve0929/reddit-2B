@@ -9,7 +9,8 @@ import {
     RESIZED_TRANSITION,
     REDDIT_USER_AGENT,
     TEST_POST_ID,
-    ASSETS_DIR
+    ASSETS_DIR,
+    MUSIC_DIR
 } from "./constants.js";
 import { areRedditCredentialsSetup, createRandomId, getRandomNumber } from "./utils.js";
 import { createImageFromText } from "./images.js";
@@ -20,6 +21,8 @@ import express from 'express';
 import cors from 'cors';
 import redisClient from './redis/appConfig.js';
 import Snoowrap from 'snoowrap/dist/snoowrap.js';
+import fs from 'fs';
+import path from 'path';
 
 const app = express();
 app.use(cors({
@@ -75,6 +78,25 @@ app.post('/api/videos/create', async function (req, res, next) {
     const videoID = createRandomId();
     conf.videoID = videoID;
     createVideo(postId, conf);
+});
+
+app.get("/api/music", async (req, res) => {
+    fs.readdir(MUSIC_DIR, (err, files) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error reading directory');
+            return;
+        }
+
+        // Map file names and paths to a JSON object
+        const fileData = files.map((fileName) => {
+            const filePath = path.join(MUSIC_DIR, fileName);
+            return { fileName, path: filePath };
+        });
+
+        // Send the JSON response
+        res.json(fileData);
+    });
 });
 
 

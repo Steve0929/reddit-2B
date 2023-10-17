@@ -2,6 +2,8 @@ import path from 'path';
 export const ___dirname = path.resolve();
 
 export const ASSETS_DIR = './js/server/assets';
+export const MUSIC_DIR = `${ASSETS_DIR}/sounds`;
+
 export const BG_VIDEO_PATH = './js/server/assets/videos/background_compressed_med.mp4'; //veed.io
 export const BG_VIDEO_DURATION = 119;
 export const TRANSITION_PATH = './js/server/assets/videos/transition.mp4';
