@@ -8,7 +8,8 @@ import {
     TMP_PATH,
     RESIZED_TRANSITION,
     REDDIT_USER_AGENT,
-    TEST_POST_ID
+    TEST_POST_ID,
+    ASSETS_DIR
 } from "./constants.js";
 import { areRedditCredentialsSetup, createRandomId, getRandomNumber } from "./utils.js";
 import { createImageFromText } from "./images.js";
@@ -76,16 +77,19 @@ app.post('/api/videos/create', async function (req, res, next) {
     createVideo(postId, conf);
 });
 
+
+app.use(express.static(ASSETS_DIR));
+
 app.listen(2000, () => {
     console.log("Listening on port 2000...");
 });
 
-app.use('/public', express.static('assets'))
 
-//read from env
+/**
+ * TODO read from conf object
 const WIDTH = '1920';
 const HEIGHT = '1080';
-//
+**/
 
 const resizeTransition = async (conf) => {
     console.log("🎛️ Resizing transition scene")
