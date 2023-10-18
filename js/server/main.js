@@ -7,10 +7,7 @@ import {
     TRANSITION_PATH,
     TMP_PATH,
     RESIZED_TRANSITION,
-    REDDIT_USER_AGENT,
-    TEST_POST_ID,
     ASSETS_DIR,
-    MUSIC_DIR
 } from "./constants.js";
 import { areRedditCredentialsSetup, createRandomId, getRandomNumber } from "./utils.js";
 import { createImageFromText } from "./images.js";
@@ -19,10 +16,9 @@ import { createAudio, getAudioDuration } from './audio.js';
 import ffmpeg from 'fluent-ffmpeg';
 import express from 'express';
 import cors from 'cors';
-import redisClient from './redis/appConfig.js';
-import Snoowrap from 'snoowrap/dist/snoowrap.js';
-import fs from 'fs';
-import path from 'path';
+
+import { musicRoutes } from './routes/music.js';
+import { credentialsRoutes } from './routes/credentials.js';
 
 const app = express();
 app.use(cors({
@@ -38,38 +34,6 @@ app.get("/", (request, response) => {
     return response.send("Hi there");
 });
 
-app.get("/api/credentials", async (request, response) => {
-    const credentialsReady = await areRedditCredentialsSetup();
-    return response.json({ credentials: credentialsReady })
-});
-
-app.post("/api/credentials", async (req, res) => {
-    const { username, password, clientId, clientSecret } = req.body;
-    try {
-        const reddit = new Snoowrap({
-            "userAgent": REDDIT_USER_AGENT,
-            "username": username,
-            "password": password,
-            "clientId": clientId,
-            "clientSecret": clientSecret
-        });
-        const response = await reddit.getSubmission(TEST_POST_ID).fetch();
-        if (response.comments.length) {
-            await redisClient.hSet('REDDIT_CREDENTIALS', {
-                username: username,
-                password: password,
-                clientId: clientId,
-                clientSecret: clientSecret
-            })
-            return res.json({ credentials: true })
-        }
-    }
-    catch (err) {
-        console.log(err);
-        return res.json({ credentials: false });
-    }
-});
-
 app.post('/api/videos/create', async function (req, res, next) {
     const credentialsReady = await areRedditCredentialsSetup();
     if (!credentialsReady) return res.json({ error: 'Reddit credentials are not set up' })
@@ -80,25 +44,8 @@ app.post('/api/videos/create', async function (req, res, next) {
     createVideo(postId, conf);
 });
 
-app.get("/api/music", async (req, res) => {
-    fs.readdir(MUSIC_DIR, (err, files) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Error reading directory');
-            return;
-        }
-
-        // Map file names and paths to a JSON object
-        const fileData = files.map((fileName) => {
-            const filePath = path.join(MUSIC_DIR, fileName);
-            return { fileName, path: filePath };
-        });
-
-        // Send the JSON response
-        res.json(fileData);
-    });
-});
-
+app.use(credentialsRoutes);
+app.use(musicRoutes);
 
 app.use(express.static(ASSETS_DIR));
 
