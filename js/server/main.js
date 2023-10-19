@@ -19,6 +19,7 @@ import cors from 'cors';
 
 import { musicRoutes } from './routes/music.js';
 import { credentialsRoutes } from './routes/credentials.js';
+import { videosRoutes } from './routes/videos..js';
 
 const app = express();
 app.use(cors({
@@ -46,6 +47,7 @@ app.post('/api/videos/create', async function (req, res, next) {
 
 app.use(credentialsRoutes);
 app.use(musicRoutes);
+app.use(videosRoutes);
 
 app.use(express.static(ASSETS_DIR));
 

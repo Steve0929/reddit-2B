@@ -3,6 +3,7 @@ export const ___dirname = path.resolve();
 
 export const ASSETS_DIR = './js/server/assets';
 export const MUSIC_DIR = `${ASSETS_DIR}/sounds`;
+export const BG_VIDEOS_DIR = `${ASSETS_DIR}/videos`;
 
 export const BG_VIDEO_PATH = './js/server/assets/videos/background_compressed_med.mp4'; //veed.io
 export const BG_VIDEO_DURATION = 119;
