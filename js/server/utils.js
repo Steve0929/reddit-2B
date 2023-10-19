@@ -1,5 +1,6 @@
 import fs from 'fs';
 import redisClient from './redis/appConfig.js';
+import path from 'path';
 
 export const createRandomId = () => {
     return Math.random().toString(16).slice(2);
@@ -30,4 +31,22 @@ export const kFormat = (num) => {
 export const areRedditCredentialsSetup = async () => {
     const REDDIT_CREDS = await redisClient.hGetAll('REDDIT_CREDENTIALS');
     return REDDIT_CREDS?.username && REDDIT_CREDS?.clientSecret;
+}
+
+export const mapDirToData = (dir) => {
+    return new Promise((resolve, reject) => {
+        fs.readdir(dir, (err, files) => {
+            if (err) {
+                console.error('Error reading directory', err);
+                reject(err);
+                return;
+            }
+            // Map file names and paths to a JSON object
+            const fileData = files.map((fileName) => {
+                const filePath = path.join(dir, fileName);
+                return { fileName, path: filePath };
+            });
+            resolve(fileData);
+        });
+    })
 }

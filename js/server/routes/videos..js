@@ -1,24 +1,18 @@
 import express from 'express';
-import fs from 'fs';
-import path from 'path';
-import { BG_VIDEOS_DIR } from '../constants.js';
+import { BG_VIDEOS_DIR, TRANSITION_VIDEOS_DIR } from '../constants.js';
+import { mapDirToData } from '../utils.js';
 
 const router = express.Router();
 
 router.get("/api/background-videos", async (req, res) => {
-    fs.readdir(BG_VIDEOS_DIR, (err, files) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Error reading directory');
-            return;
-        }
-        // Map file names and paths to a JSON object
-        const fileData = files.map((fileName) => {
-            const filePath = path.join(BG_VIDEOS_DIR, fileName);
-            return { fileName, path: filePath };
-        });
-        res.json(fileData);
-    });
+    const files = await mapDirToData(BG_VIDEOS_DIR);
+    return files ? res.json(files) : res.status(500).send('Error reading directory');
+});
+
+router.get("/api/transitions", async (req, res) => {
+    const files = await mapDirToData(TRANSITION_VIDEOS_DIR);
+    return files ? res.json(files) : res.status(500).send('Error reading directory');
 });
 
 export { router as videosRoutes };
+

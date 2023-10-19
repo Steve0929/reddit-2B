@@ -3,11 +3,12 @@ export const ___dirname = path.resolve();
 
 export const ASSETS_DIR = './js/server/assets';
 export const MUSIC_DIR = `${ASSETS_DIR}/sounds`;
-export const BG_VIDEOS_DIR = `${ASSETS_DIR}/videos`;
+export const BG_VIDEOS_DIR = `${ASSETS_DIR}/videos/background`;
+export const TRANSITION_VIDEOS_DIR =  `${ASSETS_DIR}/videos/transitions`;
 
-export const BG_VIDEO_PATH = './js/server/assets/videos/background_compressed_med.mp4'; //veed.io
+export const BG_VIDEO_PATH = './js/server/assets/videos/background/background_compressed_med.mp4'; //veed.io
 export const BG_VIDEO_DURATION = 119;
-export const TRANSITION_PATH = './js/server/assets/videos/transition.mp4';
+export const TRANSITION_PATH = './js/server/assets/videos/transitions/transition.mp4';
 export const BG_MUSIC_PATH = './js/server/assets/sounds/lofi_3.mp3';
 export const TMP_PATH = './js/server/tmp';
 export const PIPER_MODEL_PATH = 'amy/en_US-amy-medium.onnx';
