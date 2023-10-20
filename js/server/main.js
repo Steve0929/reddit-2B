@@ -35,15 +35,6 @@ app.get("/", (request, response) => {
     return response.send("Hi there");
 });
 
-app.post('/api/videos/create', async function (req, res, next) {
-    const credentialsReady = await areRedditCredentialsSetup();
-    if (!credentialsReady) return res.json({ error: 'Reddit credentials are not set up' })
-    const conf = req.body.conf;
-    const { postId } = conf;
-    const videoID = createRandomId();
-    conf.videoID = videoID;
-    createVideo(postId, conf);
-});
 
 app.use(credentialsRoutes);
 app.use(musicRoutes);
