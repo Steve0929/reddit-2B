@@ -1,5 +1,5 @@
 import nodeHtmlToImage from "node-html-to-image/dist/index.js";
-import { AVATAR_IMAGE_PATH, AVATAR_REPLY_IMAGE_PATH, BACKGROUND_IMAGE_PATH, TITLE_IMAGE_PATH, TMP_PATH, UPVOTE_COLOR, UPVOTE_IMAGE_PATH } from "./constants.js";
+import { AVATAR_IMAGE_PATH, AVATAR_REPLY_IMAGE_PATH, BACKGROUND_IMAGE_PATH, TITLE_IMAGE_PATH, TMP_PATH, UPVOTE_COLOR } from "./constants.js";
 import { createRandomId, localImageToUri } from "./utils.js";
 
 export const createImageFromText = async (text, user, upvotes, config, globalConf) => {
@@ -162,8 +162,3 @@ export const createImageFromText = async (text, user, upvotes, config, globalCon
     });
     return path;
 }
-
-/*
-<image src="{{upvoteImageSource}}" height="60px" style='margin-right: 0.5rem'/>   
-<div><i class="arrow down"></i></div>
-*/

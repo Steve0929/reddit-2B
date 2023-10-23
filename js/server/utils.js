@@ -1,6 +1,7 @@
 import fs from 'fs';
 import redisClient from './redis/appConfig.js';
 import path from 'path';
+import { REDIS_KEYS } from './constants.js';
 
 export const createRandomId = () => {
     return Math.random().toString(16).slice(2);
@@ -29,7 +30,7 @@ export const kFormat = (num) => {
 }
 
 export const areRedditCredentialsSetup = async () => {
-    const REDDIT_CREDS = await redisClient.hGetAll('REDDIT_CREDENTIALS');
+    const REDDIT_CREDS = await redisClient.hGetAll(REDIS_KEYS.REDDIT_CREDENTIALS);
     return REDDIT_CREDS?.username && REDDIT_CREDS?.clientSecret;
 }
 

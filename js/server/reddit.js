@@ -1,17 +1,16 @@
 import Snoowrap from "snoowrap/dist/snoowrap.js";
 import { kFormat } from "./utils.js";
-import { DEFAULT_NUM_COMMENTS, DEFAULT_NUM_REPLIES } from "./constants.js";
 
-
-export const redditPostToScenes = async (postId, conf) => {
-    const NUM_COMMENTS = conf?.NUM_COMMENTS ?? DEFAULT_NUM_COMMENTS;
-    const NUM_REPLIES = conf?.NUM_REPLIES ?? DEFAULT_NUM_REPLIES;
-    const response = await fetchRedditPost(postId);
+export const redditPostToScenes = async (conf) => {
+    const { postID } = conf;
+    const NUM_COMMENTS = conf?.numComments;
+    const NUM_REPLIES = conf?.numReplies;
+    const response = await fetchRedditPost(postID);
     const scenes = submissionToScenes(response, NUM_COMMENTS, NUM_REPLIES);
     return scenes;
 }
 
-export const fetchRedditPost = async (postId) => {
+export const fetchRedditPost = async (postID) => {
     const reddit = new Snoowrap({
         "userAgent": process.env.REDDIT_USER_AGENT,   // Your USER_AGENT
         "clientId": process.env.REDDIT_CLIENT_ID,     // Your Client ID
@@ -19,7 +18,7 @@ export const fetchRedditPost = async (postId) => {
         "username": process.env.REDDIT_USERNAME,      // Your Reddit username
         "password": process.env.REDDIT_PASSWORD      // Your Reddit password
     });
-    const response = await reddit.getSubmission(postId).fetch();
+    const response = await reddit.getSubmission(postID).fetch();
     const cleanedResponse = cleanRedditResponse(response);
     return cleanedResponse;
 }

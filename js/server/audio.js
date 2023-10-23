@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { createRandomId } from './utils.js';
 import { getAudioDurationInSeconds } from 'get-audio-duration';
-import { PIPER_MODEL_PATH, TMP_PATH } from './constants.js';
+import { AUDIO_DURATION_BUFFER, PIPER_MODEL_PATH, TMP_PATH } from './constants.js';
 
 const execPromise = promisify(exec);
 
@@ -23,7 +23,7 @@ export const createAudio = async (text, conf) => {
 export const getAudioDuration = async (filePath) => {
     return new Promise((resolve, reject) => {
         getAudioDurationInSeconds(filePath).then((duration) => {
-            resolve(duration + 0.6);
+            resolve(duration + AUDIO_DURATION_BUFFER);
         })
     })
 }
