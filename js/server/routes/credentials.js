@@ -24,6 +24,7 @@ router.post("/api/credentials", async (req, res) => {
         const response = await reddit.getSubmission(TEST_POST_ID).fetch();
         if (response.comments.length) {
             await redisClient.hSet(REDIS_KEYS.REDDIT_CREDENTIALS, {
+                userAgent: REDDIT_USER_AGENT,
                 username: username,
                 password: password,
                 clientId: clientId,

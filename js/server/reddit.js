@@ -1,5 +1,7 @@
 import Snoowrap from "snoowrap/dist/snoowrap.js";
 import { kFormat } from "./utils.js";
+import redisClient from "./redis/appConfig.js";
+import { REDIS_KEYS } from "./constants.js";
 
 export const redditPostToScenes = async (conf) => {
     const { postID } = conf;
@@ -11,12 +13,13 @@ export const redditPostToScenes = async (conf) => {
 }
 
 export const fetchRedditPost = async (postID) => {
+    const REDDIT_CREDS = await redisClient.hGetAll(REDIS_KEYS.REDDIT_CREDENTIALS);
     const reddit = new Snoowrap({
-        "userAgent": process.env.REDDIT_USER_AGENT,   // Your USER_AGENT
-        "clientId": process.env.REDDIT_CLIENT_ID,     // Your Client ID
-        "clientSecret": process.env.REDDIT_CLIENT_SECRET, // Your Client secret
-        "username": process.env.REDDIT_USERNAME,      // Your Reddit username
-        "password": process.env.REDDIT_PASSWORD      // Your Reddit password
+        "userAgent": REDDIT_CREDS.userAgent,
+        "clientId": REDDIT_CREDS.clientId,
+        "clientSecret": REDDIT_CREDS.clientSecret,
+        "username": REDDIT_CREDS.username,
+        "password": REDDIT_CREDS.password
     });
     const response = await reddit.getSubmission(postID).fetch();
     const cleanedResponse = cleanRedditResponse(response);
