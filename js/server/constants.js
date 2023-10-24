@@ -30,3 +30,5 @@ export const REDIS_KEYS = {
     REDDIT_CREDENTIALS: 'REDDIT_CREDENTIALS',
     VIDEOS: 'VIDEOS'
 }
+export const MERGED_FILENAME = 'merged.mp4';
+export const GENERATED_VIDEOS_PATH = './js/server/generated';

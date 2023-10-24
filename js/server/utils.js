@@ -51,3 +51,8 @@ export const mapDirToData = (dir) => {
         });
     })
 }
+
+export const getAllVideos = async () => {
+   const videos = await redisClient.hGetAll(REDIS_KEYS.VIDEOS);
+   return videos;
+}

@@ -11,6 +11,8 @@ import {
     DEFAULT_NUM_REPLIES,
     VIDEO_STATUS,
     REDIS_KEYS,
+    MERGED_FILENAME,
+    GENERATED_VIDEOS_PATH,
 } from "./constants.js";
 import { createRandomId, getRandomNumber } from "./utils.js";
 import { redditPostToScenes } from "./reddit.js";
@@ -95,13 +97,6 @@ const createVideos = async (scenes, conf) => {
     return videos;
 }
 
-const setDefaults = (conf) => {
-    conf.numComments = conf?.numComments ?? DEFAULT_NUM_COMMENTS;
-    conf.numReplies = conf?.numReplies ?? DEFAULT_NUM_REPLIES;
-    conf.transitionVideo = conf?.transitionVideo ?? DEFAULT_TRANSITION_PATH;
-    conf.bgVideo = conf?.bgVideo ?? DEFAULT_BG_VIDEO_PATH;
-    conf.bgMusic = conf?.bgMusic ?? DEFAULT_BG_MUSIC_PATH;
-}
 
 // TODO read from conf object to allow user specify video size
 const WIDTH = '1920';
@@ -115,27 +110,46 @@ export const createVideo = async (conf) => {
     //Merge everything
     console.log("🔄 Merging everything...")
     await new Promise((resolve, reject) => {
-        videos.mergeToFile('./final.mp4').on(`end`, () => resolve('done')).on(`start`, c => console.log);
+        videos.mergeToFile(`${TMP_PATH}/${conf.videoID}/${MERGED_FILENAME}`).on(`end`, () => resolve('done')).on(`start`, c => console.log);
     })
     //Mix background music
     console.log("🎶 Mixing background music...")
     await new Promise((resolve, reject) => {
         new ffmpeg()
             .addInput(conf?.bgMusic).inputOption("-stream_loop -1")
-            .addInput('./final.mp4')
+            .addInput(`${TMP_PATH}/${conf.videoID}/${MERGED_FILENAME}`)
             .addOption('-shortest')
             .complexFilter(['[0:a][1:a]amix=inputs=2'])
-            .saveToFile('./finalWithMusic.mp4').on(`end`, () => resolve('done'))
+            .saveToFile(`${GENERATED_VIDEOS_PATH}/${conf.videoID}.mp4`).on(`end`, () => resolve('done'))
     })
+    //Clear video tmp files
     console.log("🧹 Cleaning up...");
     fs.rmSync(`${TMP_PATH}/${conf.videoID}`, { recursive: true });
+    await updateVideoStatus(conf.videoID, VIDEO_STATUS.COMPLETED);
     console.log("✅ Done!")
 }
 
-export const saveVideoToRedis = async (conf) => {
+const setDefaults = (conf) => {
     const videoID = createRandomId();
     conf.videoID = videoID;
+    conf.numComments = conf?.numComments ?? DEFAULT_NUM_COMMENTS;
+    conf.numReplies = conf?.numReplies ?? DEFAULT_NUM_REPLIES;
+    conf.transitionVideo = conf?.transitionVideo ?? DEFAULT_TRANSITION_PATH;
+    conf.bgVideo = conf?.bgVideo ?? DEFAULT_BG_VIDEO_PATH;
+    conf.bgMusic = conf?.bgMusic ?? DEFAULT_BG_MUSIC_PATH;
+}
+
+export const saveVideoToRedis = async (conf) => {
     setDefaults(conf);
     const videoData = JSON.stringify({ status: VIDEO_STATUS.INPROCESS, conf: conf });
-    await redisClient.hSet(REDIS_KEYS.VIDEOS, videoID, videoData);
+    await redisClient.hSet(REDIS_KEYS.VIDEOS, conf.videoID, videoData);
+}
+
+export const updateVideoStatus = async (videoID, status) => {
+    const videoInfoString = await redisClient.hGet(REDIS_KEYS.VIDEOS, videoID);
+    if (videoInfoString) {
+        const videoInfo = JSON.parse(videoInfoString);
+        videoInfo.status = status;
+        await redisClient.hSet(REDIS_KEYS.VIDEOS, videoID, JSON.stringify(videoInfo));
+    }
 }

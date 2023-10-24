@@ -1,6 +1,6 @@
 import express from 'express';
 import { BG_VIDEOS_DIR, TRANSITION_VIDEOS_DIR } from '../constants.js';
-import { areRedditCredentialsSetup, mapDirToData } from '../utils.js';
+import { areRedditCredentialsSetup, getAllVideos, mapDirToData } from '../utils.js';
 import { createVideo, saveVideoToRedis } from '../video.js';
 
 const router = express.Router();
@@ -15,6 +15,11 @@ router.get("/api/videos/transitions", async (req, res) => {
     return files ? res.json(files) : res.status(500).send('Error reading directory');
 });
 
+router.get("/api/videos/generated", async (req, res) => {
+    const videos = await getAllVideos();
+    return videos ? res.json(videos) : res.status(500).send('Error getting videos');
+});
+
 router.post('/api/videos/create', async function (req, res, next) {
     const conf = req.body.conf;
     if (!conf) return res.status(400).json({ error: 'Missing configuration in the request' })
@@ -23,7 +28,7 @@ router.post('/api/videos/create', async function (req, res, next) {
     try {
         await saveVideoToRedis(conf);
         createVideo(conf);
-        return res.status(200);
+        return res.status(200).end();
     } catch (err) {
         console.log(err)
         return res.status(500).json({ err: err })
