@@ -5,12 +5,12 @@ import { createVideo, saveVideoToRedis } from '../video.js';
 
 const router = express.Router();
 
-router.get("/api/background-videos", async (req, res) => {
+router.get("/api/videos/background-videos", async (req, res) => {
     const files = await mapDirToData(BG_VIDEOS_DIR);
     return files ? res.json(files) : res.status(500).send('Error reading directory');
 });
 
-router.get("/api/transitions", async (req, res) => {
+router.get("/api/videos/transitions", async (req, res) => {
     const files = await mapDirToData(TRANSITION_VIDEOS_DIR);
     return files ? res.json(files) : res.status(500).send('Error reading directory');
 });

@@ -1,4 +1,5 @@
 import ffmpeg from 'fluent-ffmpeg';
+import fs from 'fs'
 import {
     BG_VIDEO_DURATION,
     DEFAULT_BG_VIDEO_PATH,
@@ -107,6 +108,7 @@ const WIDTH = '1920';
 const HEIGHT = '1080';
 
 export const createVideo = async (conf) => {
+    fs.mkdirSync(`${TMP_PATH}/${conf.videoID}`);
     const scenes = await redditPostToScenes(conf);
     const videos = await createVideos(scenes, conf);
 
@@ -125,6 +127,8 @@ export const createVideo = async (conf) => {
             .complexFilter(['[0:a][1:a]amix=inputs=2'])
             .saveToFile('./finalWithMusic.mp4').on(`end`, () => resolve('done'))
     })
+    console.log("🧹 Cleaning up...");
+    fs.rmSync(`${TMP_PATH}/${conf.videoID}`, { recursive: true });
     console.log("✅ Done!")
 }
 
