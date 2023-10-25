@@ -103,30 +103,34 @@ const WIDTH = '1920';
 const HEIGHT = '1080';
 
 export const createVideo = async (conf) => {
-    fs.mkdirSync(`${TMP_PATH}/${conf.videoID}`);
-    const scenes = await redditPostToScenes(conf);
-    const videos = await createVideos(scenes, conf);
+    try {
+        fs.mkdirSync(`${TMP_PATH}/${conf.videoID}`);
+        const scenes = await redditPostToScenes(conf);
+        const videos = await createVideos(scenes, conf);
 
-    //Merge everything
-    console.log("🔄 Merging everything...")
-    await new Promise((resolve, reject) => {
-        videos.mergeToFile(`${TMP_PATH}/${conf.videoID}/${MERGED_FILENAME}`).on(`end`, () => resolve('done')).on(`start`, c => console.log);
-    })
-    //Mix background music
-    console.log("🎶 Mixing background music...")
-    await new Promise((resolve, reject) => {
-        new ffmpeg()
-            .addInput(conf?.bgMusic).inputOption("-stream_loop -1")
-            .addInput(`${TMP_PATH}/${conf.videoID}/${MERGED_FILENAME}`)
-            .addOption('-shortest')
-            .complexFilter(['[0:a][1:a]amix=inputs=2'])
-            .saveToFile(`${GENERATED_VIDEOS_PATH}/${conf.videoID}.mp4`).on(`end`, () => resolve('done'))
-    })
-    //Clear video tmp files
-    console.log("🧹 Cleaning up...");
-    fs.rmSync(`${TMP_PATH}/${conf.videoID}`, { recursive: true });
-    await updateVideoStatus(conf.videoID, VIDEO_STATUS.COMPLETED);
-    console.log("✅ Done!")
+        //Merge everything
+        console.log("🔄 Merging everything...")
+        await new Promise((resolve, reject) => {
+            videos.mergeToFile(`${TMP_PATH}/${conf.videoID}/${MERGED_FILENAME}`).on(`end`, () => resolve('done')).on(`start`, c => console.log);
+        })
+        //Mix background music
+        console.log("🎶 Mixing background music...")
+        await new Promise((resolve, reject) => {
+            new ffmpeg()
+                .addInput(conf?.bgMusic).inputOption("-stream_loop -1")
+                .addInput(`${TMP_PATH}/${conf.videoID}/${MERGED_FILENAME}`)
+                .addOption('-shortest')
+                .complexFilter(['[0:a][1:a]amix=inputs=2'])
+                .saveToFile(`${GENERATED_VIDEOS_PATH}/${conf.videoID}.mp4`).on(`end`, () => resolve('done'))
+        })
+        //Clear video tmp files
+        console.log("🧹 Cleaning up...");
+        fs.rmSync(`${TMP_PATH}/${conf.videoID}`, { recursive: true });
+        await updateVideoStatus(conf.videoID, VIDEO_STATUS.COMPLETED);
+        console.log("✅ Done!")
+    } catch (err) {
+        console.log("⚠️ There was an error while creating the video ", err)
+    }
 }
 
 const setDefaults = (conf) => {

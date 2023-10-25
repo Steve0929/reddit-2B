@@ -25,14 +25,9 @@ router.post('/api/videos/create', async function (req, res, next) {
     if (!conf) return res.status(400).json({ error: 'Missing configuration in the request' })
     const credentialsReady = await areRedditCredentialsSetup();
     if (!credentialsReady) return res.status(400).json({ error: 'Reddit credentials are not set up' })
-    try {
-        await saveVideoToRedis(conf);
-        createVideo(conf);
-        return res.status(200).end();
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json({ err: err })
-    }
+    await saveVideoToRedis(conf);
+    createVideo(conf);
+    return res.status(200).end();
 });
 
 export { router as videosRoutes };
