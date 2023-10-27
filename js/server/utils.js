@@ -53,6 +53,15 @@ export const mapDirToData = (dir) => {
 }
 
 export const getAllVideos = async () => {
-   const videos = await redisClient.hGetAll(REDIS_KEYS.VIDEOS);
-   return videos;
+    const videosInfo = await redisClient.hGetAll(REDIS_KEYS.VIDEOS);
+    const videos = Object.values(videosInfo).map((value) => {
+        const info = JSON.parse(value);
+        return {
+            status: info.status,
+            videoID: info.conf?.videoID,
+            date: info.conf?.date,
+            conf: info.conf
+        }
+    });
+    return videos;
 }
