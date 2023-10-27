@@ -6,7 +6,7 @@ import cors from 'cors';
 import { musicRoutes } from './routes/music.js';
 import { credentialsRoutes } from './routes/credentials.js';
 import { videosRoutes } from './routes/videos.js';
-import { ASSETS_DIR } from "./constants.js";
+import { ASSETS_DIR, GENERATED_VIDEOS_PATH } from "./constants.js";
 
 const app = express();
 app.use(cors({
@@ -27,13 +27,8 @@ app.use(musicRoutes);
 app.use(videosRoutes);
 
 app.use(express.static(ASSETS_DIR));
+app.use(express.static(GENERATED_VIDEOS_PATH))
 
 app.listen(2000, () => {
     console.log("Listening on port 2000...");
 });
-
-
-//createVideo('16121p5');
-//testFluent();
-//createImageFromText("Amanda Byness story breaks my heart", "steve", 20000, { initialImage: true })
-//createImageFromText("Amanda Byness story breaks my heart", "steve", 20000, { initialImage: false })
