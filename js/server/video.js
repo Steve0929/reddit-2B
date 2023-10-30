@@ -129,6 +129,7 @@ export const createVideo = async (conf) => {
         await updateVideoStatus(conf.videoID, VIDEO_STATUS.COMPLETED);
         console.log("✅ Done!")
     } catch (err) {
+        updateVideoStatus(conf.videoID, VIDEO_STATUS.FAILED)
         console.log("⚠️ There was an error while creating the video ", err)
     }
 }

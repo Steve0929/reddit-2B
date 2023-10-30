@@ -24,7 +24,8 @@ export const REDDIT_USER_AGENT = "reddit-2B";
 export const TEST_POST_ID = '5kye1c';
 export const VIDEO_STATUS = {
     COMPLETED: "COMPLETED",
-    INPROCESS: "INPROCESS"
+    INPROCESS: "INPROCESS",
+    FAILED: "FAILED"
 }
 export const REDIS_KEYS = {
     REDDIT_CREDENTIALS: 'REDDIT_CREDENTIALS',
