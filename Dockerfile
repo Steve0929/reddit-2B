@@ -13,12 +13,12 @@ RUN apt-get update && apt install redis -y && redis-cli --version
 # Install pm2 globally
 RUN npm install pm2 -g
 
-# dependencies for server
+# Install dependencies for server
 COPY js/server/package.json /tmp/package.json
 RUN cd /tmp && npm install
 RUN mkdir -p /app/js/server && cp -a /tmp/node_modules /app/js/server
 
-# dependencies for UI
+# Install dependencies for UI
 COPY js/UI/package.json /tmp_UI/package.json
 RUN cd /tmp_UI && npm install
 RUN mkdir -p /app/js/UI && cp -a /tmp_UI/node_modules /app/js/UI
@@ -36,7 +36,7 @@ COPY . /app
 # Expose ports
 EXPOSE 2000 3000
 
-#Build the next.js UI app
+# Build the next.js UI app
 # Temporary working directory for building the Next.js application
 WORKDIR /app/js/UI
 RUN npm run build
