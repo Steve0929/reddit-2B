@@ -10,7 +10,7 @@ docker build -t reddit-2b .
 docker run -p 2000:2000 -p 3000:3000 reddit-2b
 ```
 
-🚧 TODO 
+### 🚧 TODO 
 * ~Fetch reddit post info~
 * ~Local TTS~
 * ~Create rendering FFMPEG pipeline~
