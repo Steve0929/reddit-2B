@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import Card from '../common/Card';
-import { stepComponentProps, confObject, SERVER_URL } from '../../constants';
 import { SoundBlock } from '../common/SoundBlock';
+import { confObject, SERVER_URL,stepComponentProps } from '../../constants';
 
 
 export const SoundSelect = ({ conf, setConf }: stepComponentProps) => {
@@ -13,13 +14,13 @@ export const SoundSelect = ({ conf, setConf }: stepComponentProps) => {
         const resp = await fetch(`${SERVER_URL}/api/music`);
         const musicResponse = await resp.json();
         setAvailableSounds(musicResponse);
-      } catch (err) { }
+      } catch (err) { console.log(err); }
     }
     getSounds();
   }, [])
 
   return (
-    <Card title={'3. Select background music'} image={'/music.png'}>
+    <Card title="3. Select background music" image="/music.png">
       <div className='flex gap-6 w-fit m-auto flex-wrap'>
         {
           availableSounds?.map(_sound => {

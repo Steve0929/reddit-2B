@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+
 import Card from '../common/Card';
-import { stepComponentProps, MINMUM_COMMENTS, confObject } from '../../constants';
+import { confObject,MINMUM_COMMENTS, stepComponentProps } from '../../constants';
 
 interface InputNumberProps {
   value: number,
@@ -54,7 +55,7 @@ export const Comments = ({ conf, setConf }: stepComponentProps) => {
   const NUM_REPLIES_FIELD = 'numReplies';
 
   return (
-    <Card title={'2. Select the number of comments and replies'} image={'/speech.png'}>
+    <Card title='2. Select the number of comments and replies' image='/speech.png'>
       <InputNumber label='Number of comments'
         value={conf[NUM_COMMENTS_FIELD]}
         increaseValue={() => increaseValue(NUM_COMMENTS_FIELD)}

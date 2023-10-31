@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { SERVER_URL } from "../../constants";
+
 import { SoundWave } from "./SoundWave";
+import { SERVER_URL } from "../../constants";
 
 interface SoundBlockProps {
   fileName: string,
@@ -42,7 +43,7 @@ export const SoundBlock = ({ fileName, isSelected, handleSelect }: SoundBlockPro
         <div className="m-auto">
           {
             playing ?
-              <SoundWave height={'25px'} color={'#4faffa'} />
+              <SoundWave height="25px" color="#4faffa" />
               :
               <Image src="/playbtn.png" quality={100} width={30} height={29} alt='playBtn' />
           }

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import Card from '../common/Card';
-import { stepComponentProps, confObject, SERVER_URL } from '../../constants';
 import { VideoBlock } from '../common/VideoBlock';
+import { confObject, SERVER_URL,stepComponentProps } from '../../constants';
 
 export const VideoAssetsSelect = ({ conf, setConf }: stepComponentProps) => {
   const [availableVideos, setAvailableVideos] = useState<[{ path: string, fileName: string }] | []>([]);
@@ -12,7 +13,7 @@ export const VideoAssetsSelect = ({ conf, setConf }: stepComponentProps) => {
       const resp = await fetch(`${SERVER_URL}/api/videos/${urlPath}`);
       const videosResponse = await resp.json();
       setFunction(videosResponse);
-    } catch (err) { }
+    } catch (err) { console.log(err); }
   }
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export const VideoAssetsSelect = ({ conf, setConf }: stepComponentProps) => {
   }, [])
 
   return (
-    <Card title={'4. Select background video'} image={'/goldtv.png'}>
+    <Card title="4. Select background video" image="/goldtv.png">
       <h2 className='font-semibold text-gray-600 text-lg '>Select the <span className='text-[#5AB3FF]'>background</span> video</h2>
       <div className='flex gap-6 gap-y-12 w-full m-auto pb-8 mt-4 flex-wrap'>
         {

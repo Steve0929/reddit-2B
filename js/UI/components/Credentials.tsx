@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import Image from 'next/image';
-import { SERVER_URL } from '../constants';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+
+import { SERVER_URL } from '../constants';
 import { getCredentialStatusBadge } from '../utils';
 
 export const Credentials = () => {
@@ -21,7 +22,7 @@ export const Credentials = () => {
                 const credentialsReadyResponse = await resp.json();
                 setCredentialsReady(credentialsReadyResponse?.credentials);
             } catch (err) {
-
+                console.log(err);
             }
         }
         checkCredentialsSetup();

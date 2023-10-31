@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Card from '../common/Card';
-import { getIdFromUrl } from '../../utils';
-import { stepComponentProps, confObject, NEW } from '../../constants';
 import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+
+import Card from '../common/Card';
+import { confObject, NEW,stepComponentProps } from '../../constants';
+import { getIdFromUrl } from '../../utils';
 
 export const LinkInput = ({ conf, setConf }: stepComponentProps) => {
   const router = useRouter();
@@ -22,7 +23,7 @@ export const LinkInput = ({ conf, setConf }: stepComponentProps) => {
   }, [id])
 
   return (
-    <Card title={'1. Paste the post URL'} image={'/link.png'}>
+    <Card title="1. Paste the post URL" image="/link.png">
       <input
         value={postUrl}
         onChange={(e) => setPostUrl(e.target.value)}

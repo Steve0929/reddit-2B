@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import Image from 'next/image'
-import { Topbar } from '../../components/Topbar';
-import { useState } from 'react';
-import { getIdFromUrl } from '../../utils';
 import Router from 'next/router';
+import { useState } from 'react';
+
+import { Topbar } from '../../components/Topbar';
+import { getIdFromUrl } from '../../utils';
 
 export default function Home() {
   const [postUrl, setPostUrl] = useState('');

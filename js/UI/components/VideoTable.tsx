@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import React from 'react';
+import { toast } from 'react-toastify';
+
 import { SERVER_URL, VIDEO_STATUS } from '../constants';
 import { statusToBadge } from '../utils';
-import { toast } from 'react-toastify';
 
 interface VideoTabelProps {
   videos: { videoID: string, status: string, date: string }[],
@@ -34,7 +35,7 @@ export const VideoTable = ({ videos, loading, handleUpdate }: VideoTabelProps) =
   return (
     <div>
       <div className='flex items-center gap-x-3 mb-6'>
-        <Image src={`/camera.png`} width={55} height={55} alt='camera' />
+        <Image src="/camera.png" width={55} height={55} alt='camera' />
         <h1 className='text-xl font-bold text-gray-600 mt-4'>Your videos</h1>
         <div className="ml-auto gummy text-sm w-fit cursor-pointer rounded-lg shadow-even text-lg font-bold 
                         bg-white-500 text-[#5AB3FF] border-2 px-4 py-1" onClick={handleUpdate}>

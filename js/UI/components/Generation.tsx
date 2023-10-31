@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
 import Image from 'next/image';
-import { LinkInput } from './steps/LinkInput';
-import { FINAL_STEP, SERVER_URL, SUCCESS_STEP, Step, confObject } from '../constants';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+
 import { Comments } from './steps/Comments';
+import { LinkInput } from './steps/LinkInput';
+import { Processing } from './steps/Processing';
 import { SoundSelect } from './steps/SoundSelect';
 import { VideoAssetsSelect } from './steps/VideoAssetsSelect';
-import { toast } from 'react-toastify';
-import { Processing } from './steps/Processing';
-import { useRouter } from 'next/router';
+import { confObject,FINAL_STEP, SERVER_URL, Step, SUCCESS_STEP } from '../constants';
 import { getUrlForNewVideo } from '../utils';
 
 const wrapStepComponent = (
@@ -100,7 +101,7 @@ export const Generation = ({ fetchVideos }: { fetchVideos: () => void }) => {
   return (
     <div className=''>
       <div className='flex items-center gap-x-3 mb-6'>
-        <Image src={`/write.png`} width={55} height={55} alt='hand-write' />
+        <Image src="/write.png" width={55} height={55} alt='hand-write' />
         <h1 className='text-xl font-bold text-gray-600 mt-4'>Generate new video</h1>
       </div>
 
@@ -121,7 +122,7 @@ export const Generation = ({ fetchVideos }: { fetchVideos: () => void }) => {
         {
           step !== FINAL_STEP && step !== SUCCESS_STEP &&
           <NextButton
-            label={'Next ►'}
+            label="Next ►"
             handleOnClick={handleNextStep}
             disabled={!stepsMapping[step]?.nextStepEnabled} />
         }
@@ -137,7 +138,7 @@ export const Generation = ({ fetchVideos }: { fetchVideos: () => void }) => {
         {
           step === SUCCESS_STEP &&
           <NextButton
-            label={'Create a new video'}
+            label="Create a new video"
             handleOnClick={restartFlow}
             disabled={false} />
         }
