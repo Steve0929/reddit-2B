@@ -12,7 +12,8 @@ docker run -p 2000:2000 -p 3000:3000 reddit-2b
 
 ### 🚧 TODO 
 * ~Fetch reddit post info~
-* ~Local TTS~
+* ~Hnadle image creation~
+* ~Implement local TTS~
 * ~Create rendering FFMPEG pipeline~
 * ~Create server~
 * ~Create UI~
