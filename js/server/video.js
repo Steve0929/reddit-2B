@@ -33,7 +33,7 @@ const resizeTransition = async (conf) => {
 }
 
 const renderScene = async (scene, conf) => {
-    console.log("🖌️ Rendering scene ", JSON.stringify(scene))
+    console.log("🖌️ Rendering scene ")
     await new Promise((resolve, reject) => {
         new ffmpeg()
             .addInput(scene.audio)
