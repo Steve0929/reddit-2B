@@ -18,9 +18,9 @@ docker run -p 2000:2000 -p 3000:3000 reddit-2b
 * ~Create server~
 * ~Create UI~
 * ~Dockerize app~ 
+* ~Handle background video duration const~
 * Handle background music volume
-* Handle background video duration const
-* Allow user to specify video dimensions
-* Voice model pitch can be changed on the onnx.json
 * Allow users to upload custom assets
+* Voice model pitch can be changed on the onnx.json
+* Allow user to specify video dimensions
 
