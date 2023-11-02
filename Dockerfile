@@ -13,15 +13,13 @@ RUN apt-get update && apt install redis -y && redis-cli --version
 # Install pm2 globally
 RUN npm install pm2 -g
 
-# Install dependencies for server
+# Copy both server and UI package.json files
 COPY js/server/package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN mkdir -p /app/js/server && cp -a /tmp/node_modules /app/js/server
-
-# Install dependencies for UI
 COPY js/UI/package.json /tmp_UI/package.json
-RUN cd /tmp_UI && npm install
-RUN mkdir -p /app/js/UI && cp -a /tmp_UI/node_modules /app/js/UI
+
+# Install dependencies for both server and UI in one step
+RUN npm install --prefix /tmp && mkdir -p /app/js/server/ && mv /tmp/node_modules app/js/server/
+RUN npm install --prefix /tmp_UI && mkdir -p /app/js/UI/ && mv /tmp_UI/node_modules app/js/UI/
 
 # Install Piper
 RUN mkdir /piper && cd /piper && wget https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_amd64.tar.gz && tar -xzvf piper_amd64.tar.gz

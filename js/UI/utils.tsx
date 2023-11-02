@@ -11,7 +11,7 @@ export const getUrlForNewVideo = () => {
 }
 
 export const getCredentialStatusBadge = (credentialsReady: boolean | null) => {
-    return credentialsReady ? <span className='text-[#51dd30]'>Ready</span> : <span className='text-[#ffc107]'>Pending</span>
+    return credentialsReady ? <span style={{ color: '#51dd30' }}>Ready</span> : <span style={{ color: '#ffc107' }}>Pending</span>
 }
 
 export const statusToBadge = (status: string) => {

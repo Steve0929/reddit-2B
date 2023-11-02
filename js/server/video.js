@@ -1,7 +1,6 @@
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs'
 import {
-    BG_VIDEO_DURATION,
     DEFAULT_BG_VIDEO_PATH,
     DEFAULT_BG_MUSIC_PATH,
     DEFAULT_TRANSITION_PATH,
@@ -19,6 +18,7 @@ import { redditPostToScenes } from "./reddit.js";
 import { createAudio, getAudioDuration } from './audio.js';
 import { createImageFromText } from "./images.js";
 import redisClient from './redis/appConfig.js';
+import { promisify } from 'util';
 
 const resizeTransition = async (conf) => {
     console.log("🎛️ Resizing transition scene")
@@ -59,6 +59,7 @@ const createSceneImageAndAudio = async (scene, conf) => {
 
 const createVideos = async (scenes, conf) => {
     const RESIZED_TRANSITION_PATH = await resizeTransition(conf);
+    const BG_VIDEO_DURATION = await getVideoDuration(conf?.bgVideo);
     const videos = new ffmpeg();
     let sceneNum = 0;
     for (const scene of scenes) {
@@ -95,6 +96,14 @@ const createVideos = async (scenes, conf) => {
         videos.addInput(RESIZED_TRANSITION_PATH);
     }
     return videos;
+}
+
+const getVideoDuration = async (videoPath) => {
+    const ffprobePromise = promisify(ffmpeg.ffprobe);
+    const metadata = await ffprobePromise(videoPath);
+    const duration = metadata.format.duration;
+    console.log("⏱️ Background video duration is: ", duration);
+    return duration;
 }
 
 

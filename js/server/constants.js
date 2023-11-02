@@ -18,7 +18,6 @@ export const AVATAR_REPLY_IMAGE_PATH = './js/server/assets/images/avatar1.png';
 export const BACKGROUND_IMAGE_PATH = './js/server/assets/images/background.png';
 export const UPVOTE_COLOR = '#00de87';
 export const DEFAULT_BG_VIDEO_PATH = './js/server/assets/videos/background/background_compressed_med.mp4'; //veed.io
-export const BG_VIDEO_DURATION = 119;
 export const DEFAULT_BG_MUSIC_PATH = './js/server/assets/sounds/lofi_3.mp3';
 export const REDDIT_USER_AGENT = "reddit-2B";
 export const TEST_POST_ID = '5kye1c';
