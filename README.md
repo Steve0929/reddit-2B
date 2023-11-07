@@ -1,5 +1,5 @@
 # reddit-2B
-Convert Reddit posts to videos. Image creation, Text to Speech generation and video rendering happens right on your local device with minimal reliance on external dependencies/services except for the Reddit API.
+Convert Reddit posts to videos. The image creation, Text to Speech generation and video rendering happens right on your local device with minimal reliance on external dependencies/services except for the Reddit API.
 
 ## Usage with Docker 🐋
 ```
