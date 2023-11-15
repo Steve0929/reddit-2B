@@ -56,14 +56,15 @@ export default function Home() {
 
         <main>
           <div className='relative px-6 lg:px-8'>
-            <div className='mx-auto max-w-2xl py-32 pt-16'>
+            <div className='mx-auto max-w-2xl py-32 pt-8'>
               <div className='hidden sm:mb-8 sm:flex sm:justify-center'>
 
               </div>
               <Image
-                src="/912.png"
-                width={80}
-                height={80}
+                src="/logoup.png"
+                quality={100}
+                width={130}
+                height={130}
                 alt="logo"
                 className='m-auto mb-4'
               />
