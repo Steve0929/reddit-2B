@@ -56,7 +56,7 @@ export default function Home() {
 
         <main>
           <div className='relative px-6 lg:px-8'>
-            <div className='mx-auto max-w-2xl py-32 pt-8'>
+            <div className='mx-auto max-w-2xl py-32 pt-4'>
               <div className='hidden sm:mb-8 sm:flex sm:justify-center'>
 
               </div>
