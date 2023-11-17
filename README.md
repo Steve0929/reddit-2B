@@ -1,5 +1,10 @@
 # reddit-2B
-Convert Reddit posts to videos. The image creation, Text to Speech generation and video rendering happens right on your local device with minimal reliance on external dependencies/services except for the Reddit API.
+
+<div align="center" style="display:flex">
+  <img src="https://github.com/Steve0929/reddit-2B/assets/26073885/d74da10a-3ea1-4655-9f62-75474065eb8e" width="100px" height="100px" >
+</div>
+
+ <strong>reddit-2B</strong> allows you to automatically create a video from any Reddit post. The image creation, Text to Speech generation and video rendering happens right on your local device with minimal reliance on external dependencies/services except for the Reddit API.
 
 ## Usage with Docker 🐋
 ```
