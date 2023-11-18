@@ -8,6 +8,8 @@
 
 ## Usage with Docker 🐋
 ```
+git clone https://github.com/Steve0929/reddit-2B
+cd reddit-2B
 docker build -t reddit-2b .
 ```
 
