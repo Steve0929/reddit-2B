@@ -10,6 +10,7 @@
 ```
 docker run -p 2000:2000 -p 3000:3000 steve0929/reddit-2b
 ```
+Open http://localhost:3000 in your browser
 
 ## Setup
 You need to provide your Reddit credentials (username and password) along with a Reddit app client id and client secret.
