@@ -8,13 +8,7 @@
 
 ## Usage with Docker 🐋
 ```
-git clone https://github.com/Steve0929/reddit-2B
-cd reddit-2B
-docker build -t reddit-2b .
-```
-
-```
-docker run -p 2000:2000 -p 3000:3000 reddit-2b
+docker run -p 2000:2000 -p 3000:3000 steve0929/reddit-2b
 ```
 
 ## Setup
@@ -29,6 +23,14 @@ You need to provide your Reddit credentials (username and password) along with a
 
 ![image](https://github.com/Steve0929/reddit-2B/assets/26073885/9b1c90a2-4445-4154-9e6a-4384de87df9f)
 <!--- ![image](https://github.com/Steve0929/reddit-2B/assets/26073885/53c3003a-62c5-496e-9aee-1d7197028f02)  --->
+
+### Build/run Docker image from repo
+```
+git clone https://github.com/Steve0929/reddit-2B
+cd reddit-2B
+docker build -t reddit-2b .
+docker run -p 2000:2000 -p 3000:3000 reddit-2b
+```
 
 ### 🚧 TODO 
 * ~Fetch reddit post info~
