@@ -116,22 +116,21 @@ export const createImageFromText = async (text, user, upvotes, config, globalCon
                 </div>
                 `
                 : `               
-               <div class='flex-container'>
+               <div class='flex-container' style="margin-right: auto;">
                    <image src="{{avatarImageSource}}" width="140px" class="image-left" />
                    <div>
                    <b>u/${user}</b> <br/>
                    ${text}
                     <div class="upvotes">
-                            <div class="up-container"><i class="arrow up"></i></div>
-                            <span class='numbers'>${upvotes}</span>
-                            
-                        </div>
+                        <div class="up-container"><i class="arrow up"></i></div>
+                        <span class='numbers'>${upvotes}</span>
+                    </div>
                     </div>
                </div>
                `
             }
             ${isReply ?
-                `<div class='flex-container reply'>
+                `<div class='flex-container reply' style="margin-right: auto;">
                     <image src="{{replyImageSource}}" width="120px" class="image-left" />
                     <div class='reply-font'>
                         <b>u/${config.reply_user}</b> <br/>
