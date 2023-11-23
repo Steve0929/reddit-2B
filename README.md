@@ -13,10 +13,17 @@ docker run -p 2000:2000 -p 3000:3000 steve0929/reddit-2b
 Go to http://localhost:3000 in your browser.
 
 ## Using the app
+
 <div align="center">
   </br>
-  <a href="https://www.youtube.com/watch?v=p-e8BSjPDTY"><img src="https://img.youtube.com/vi/p-e8BSjPDTY/0.jpg" alt="usage-video"></a>
+  <a href="https://www.youtube.com/watch?v=p-e8BSjPDTY">
+    <div style="border-radius:50%; border: 1px solid black;" >
+      <img src=https://github.com/Steve0929/reddit-2B/assets/26073885/969ddb0e-2fbe-4dcd-86bd-dca8a29920e1"  alt="usage-video" >
+    </div>
+  </a>
+  https://www.youtube.com/watch?v=p-e8BSjPDTY
 </div>
+
 
 ## Setup
 You need to provide your Reddit credentials (username and password) along with a Reddit app ```client id``` and ```client secret```.
