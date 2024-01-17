@@ -57,7 +57,7 @@ docker run -p 2000:2000 -p 3000:3000 reddit-2b
 * ~Handle background video duration const~
 * Handle background music volume
 * Sort created videos by timestamp
-* Allow users to choose which comments/reply to include
-* Allow users to upload custom assets
+* Allow users to upload custom video assets
 * Allow user to specify video dimensions
+* Allow users to choose which comments/reply to include
 
